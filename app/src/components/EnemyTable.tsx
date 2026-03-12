@@ -220,59 +220,59 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort }: EnemyTable
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {boss && <Skull className="w-4 h-4 text-amber-400" />}
-                        <span className={boss ? 'text-amber-200' : 'text-slate-200'}>
+                        <span className={boss ? 'text-amber-200' : 'text-slate-100'}>
                           {enemy.name}
                         </span>
                       </div>
-                      <span className="text-xs text-slate-500 mt-0.5 block">{enemy.id}</span>
+                      <span className="text-xs text-slate-400 mt-0.5 block">{enemy.id}</span>
                     </TableCell>
-                    <TableCell className="text-right font-mono text-slate-300">
+                    <TableCell className="text-right font-mono text-slate-100">
                       {formatNumber(enemy.hp_day1)}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-slate-300">
+                    <TableCell className="text-right font-mono text-slate-100">
                       {formatNumber(enemy.hp_day2)}
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.phys_normal > 0 ? 'text-green-400' : 'text-slate-500'}>
+                      <span className={enemy.phys_normal > 0 ? 'text-green-400' : 'text-slate-400'}>
                         {enemy.phys_normal > 0 ? `+${enemy.phys_normal}%` : '0%'}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.slash > 0 ? 'text-green-400' : enemy.slash < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.slash > 0 ? 'text-green-400' : enemy.slash < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.slash > 0 ? `+${enemy.slash}%` : `${enemy.slash}%`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.strike > 0 ? 'text-green-400' : enemy.strike < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.strike > 0 ? 'text-green-400' : enemy.strike < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.strike > 0 ? `+${enemy.strike}%` : `${enemy.strike}%`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.pierce > 0 ? 'text-green-400' : enemy.pierce < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.pierce > 0 ? 'text-green-400' : enemy.pierce < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.pierce > 0 ? `+${enemy.pierce}%` : `${enemy.pierce}%`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.magic > 0 ? 'text-green-400' : enemy.magic < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.magic > 0 ? 'text-green-400' : enemy.magic < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.magic > 0 ? `+${enemy.magic}%` : `${enemy.magic}%`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.fire > 0 ? 'text-green-400' : enemy.fire < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.fire > 0 ? 'text-green-400' : enemy.fire < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.fire > 0 ? `+${enemy.fire}%` : `${enemy.fire}%`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.lightning > 0 ? 'text-green-400' : enemy.lightning < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.lightning > 0 ? 'text-green-400' : enemy.lightning < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.lightning > 0 ? `+${enemy.lightning}%` : `${enemy.lightning}%`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-mono">
-                      <span className={enemy.holy > 0 ? 'text-green-400' : enemy.holy < 0 ? 'text-red-400' : 'text-slate-500'}>
+                      <span className={enemy.holy > 0 ? 'text-green-400' : enemy.holy < 0 ? 'text-red-400' : 'text-slate-400'}>
                         {enemy.holy > 0 ? `+${enemy.holy}%` : `${enemy.holy}%`}
                       </span>
                     </TableCell>
-                    <TableCell className="text-right font-mono text-blue-300">
+                    <TableCell className="text-right font-mono text-blue-200">
                       {formatNumber(enemy.poise)}
                     </TableCell>
                     <TableCell className="text-right font-mono">
@@ -287,7 +287,7 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort }: EnemyTable
                             </Badge>
                           ))
                         ) : (
-                          <span className="text-slate-600 text-xs">-</span>
+                          <span className="text-slate-500 text-xs">-</span>
                         )}
                       </div>
                     </TableCell>

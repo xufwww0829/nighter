@@ -9,15 +9,19 @@ import { AlertCircle, Sword } from 'lucide-react';
 function App() {
   const {
     enemies,
+    filteredCount,
     loading,
     error,
     sortField,
     sortOrder,
     filters,
     stats,
+    currentPage,
+    totalPages,
     handleSort,
     handleFilterChange,
     resetFilters,
+    setCurrentPage,
   } = useEnemyData();
 
   if (loading) {
@@ -86,7 +90,7 @@ function App() {
           filters={filters}
           onFilterChange={handleFilterChange}
           onReset={resetFilters}
-          resultCount={enemies.length}
+          resultCount={filteredCount}
         />
 
         {/* Enemy Table */}
@@ -95,11 +99,14 @@ function App() {
           sortField={sortField}
           sortOrder={sortOrder}
           onSort={handleSort}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
 
         {/* Footer */}
         <footer className="text-center py-6 text-slate-600 text-sm">
-          <p>艾尔登法环：黑夜君临 敌人数据查询 | 共 {enemies.length} 条记录</p>
+          <p>艾尔登法环：黑夜君临 敌人数据查询 | 共 {filteredCount} 条记录</p>
         </footer>
       </main>
     </div>

@@ -8,6 +8,8 @@ export function useEnemyData() {
   
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(20);
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     race: 'all',
@@ -50,6 +52,7 @@ export function useEnemyData() {
 
   const handleFilterChange = useCallback((key: keyof FilterState, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
+    setCurrentPage(1);
   }, []);
 
   const resetFilters = useCallback(() => {
@@ -127,6 +130,14 @@ export function useEnemyData() {
     return result;
   }, [enemies, filters, sortField, sortOrder]);
 
+  const totalPages = Math.ceil(filteredAndSortedEnemies.length / pageSize);
+
+  const paginatedEnemies = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredAndSortedEnemies.slice(startIndex, endIndex);
+  }, [filteredAndSortedEnemies, currentPage, pageSize]);
+
   const stats = useMemo(() => {
     if (enemies.length === 0) return null;
     
@@ -149,15 +160,20 @@ export function useEnemyData() {
   }, [enemies]);
 
   return {
-    enemies: filteredAndSortedEnemies,
+    enemies: paginatedEnemies,
+    filteredCount: filteredAndSortedEnemies.length,
     loading,
     error,
     sortField,
     sortOrder,
     filters,
     stats,
+    currentPage,
+    totalPages,
+    pageSize,
     handleSort,
     handleFilterChange,
     resetFilters,
+    setCurrentPage,
   };
 }

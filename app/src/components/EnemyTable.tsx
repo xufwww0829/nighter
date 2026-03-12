@@ -7,6 +7,15 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import type { Enemy, SortField, SortOrder } from '@/types/enemy';
 import { 
   ArrowUpDown, 
@@ -27,6 +36,9 @@ interface EnemyTableProps {
   sortField: SortField;
   sortOrder: SortOrder;
   onSort: (field: SortField) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 interface SortHeaderProps {
@@ -43,7 +55,7 @@ function SortHeader({ field, label, currentField, currentOrder, onSort, icon, cl
   const isActive = currentField === field;
   
   return (
-    <TableHead className={`cursor-pointer hover:bg-slate-800/50 transition-colors ${className}`} onClick={() => onSort(field)}>
+    <TableHead className={`cursor-pointer hover:bg-slate-800/50 transition-colors text-slate-100 ${className}`} onClick={() => onSort(field)}>
       <div className="flex items-center gap-1">
         {icon && <span className="opacity-60">{icon}</span>}
         <span>{label}</span>
@@ -57,7 +69,7 @@ function SortHeader({ field, label, currentField, currentOrder, onSort, icon, cl
   );
 }
 
-export function EnemyTable({ enemies, sortField, sortOrder, onSort }: EnemyTableProps) {
+export function EnemyTable({ enemies, sortField, sortOrder, onSort, currentPage, totalPages, onPageChange }: EnemyTableProps) {
   const formatNumber = (num: number | string) => {
     if (num === '' || num === null || num === undefined) return '-';
     const n = Number(num);
@@ -196,7 +208,7 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort }: EnemyTable
                 onSort={onSort}
                 className="text-right"
               />
-              <TableHead className="text-center">种族</TableHead>
+              <TableHead className="text-center text-slate-100">种族</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -298,6 +310,57 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort }: EnemyTable
           </TableBody>
         </Table>
       </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center py-4 border-t border-slate-700/30">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                />
+              </PaginationItem>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                if (
+                  page === 1 || 
+                  page === totalPages || 
+                  (page >= currentPage - 1 && page <= currentPage + 1)
+                ) {
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => onPageChange(page)}
+                        isActive={page === currentPage}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                } else if (
+                  page === currentPage - 2 || 
+                  page === currentPage + 2
+                ) {
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  );
+                }
+                return null;
+              })}
+              
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 }

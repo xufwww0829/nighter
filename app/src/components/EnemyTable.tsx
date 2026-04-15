@@ -17,6 +17,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import type { Enemy, SortField, SortOrder } from '@/types/enemy';
+import { getEnemyRaceLabels, isBossEnemy } from '@/lib/enemy';
 import { 
   ArrowUpDown, 
   ArrowUp, 
@@ -79,19 +80,101 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort, currentPage,
   };
 
   const getRaceBadges = (enemy: Enemy) => {
-    const badges = [];
-    if (enemy.void === 'Yes') badges.push({ label: '虚空', color: 'bg-purple-600/60 text-purple-100' });
-    if (enemy.deathborn === 'Yes') badges.push({ label: '死诞', color: 'bg-cyan-600/60 text-cyan-100' });
-    if (enemy.ancient_dragon === 'Yes') badges.push({ label: '古龙', color: 'bg-red-600/60 text-red-100' });
-    if (enemy.normal_dragon === 'Yes') badges.push({ label: '龙', color: 'bg-yellow-600/60 text-yellow-100' });
-    return badges;
+    return getEnemyRaceLabels(enemy).map((label) => ({
+      label,
+      color:
+        label === '虚空'
+          ? 'bg-purple-600/60 text-purple-100'
+          : label === '死诞'
+            ? 'bg-cyan-600/60 text-cyan-100'
+            : label === '古龙'
+              ? 'bg-red-600/60 text-red-100'
+              : 'bg-yellow-600/60 text-yellow-100',
+    }));
   };
 
-  const isBoss = (name: string) => name.toLowerCase().includes('boss');
-
   return (
-    <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl overflow-hidden">
-      <div className="overflow-x-auto">
+    <section className="overflow-hidden rounded-[28px] border border-slate-800/80 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(2,6,23,0.88))] shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
+      <div className="flex flex-col gap-3 border-b border-slate-800/80 px-5 py-5 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Enemy Index</p>
+          <h3 className="mt-1 text-xl font-semibold text-white">敌人数据总览</h3>
+          <p className="mt-1 text-sm text-slate-400">点击表头可排序，移动端可直接浏览卡片化结果。</p>
+        </div>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Badge className="rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1 text-slate-200">
+            第 {currentPage} / {Math.max(totalPages, 1)} 页
+          </Badge>
+          <Badge className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-amber-100">
+            支持多字段搜索
+          </Badge>
+        </div>
+      </div>
+
+      <div className="grid gap-3 border-b border-slate-800/80 p-4 md:hidden">
+        {enemies.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-700/80 bg-slate-950/40 px-4 py-10 text-center text-slate-400">
+            <Skull className="mx-auto mb-3 h-10 w-10 opacity-30" />
+            没有找到匹配的敌人
+          </div>
+        ) : (
+          enemies.map((enemy, index) => {
+            const raceBadges = getRaceBadges(enemy);
+            const boss = isBossEnemy(enemy);
+
+            return (
+              <article
+                key={enemy.id + index}
+                className="rounded-2xl border border-slate-800/80 bg-slate-950/50 p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      {boss && <Skull className="h-4 w-4 text-amber-400" />}
+                      <h4 className={`font-medium ${boss ? 'text-amber-200' : 'text-slate-100'}`}>{enemy.name}</h4>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-500">{enemy.id}</p>
+                  </div>
+                  <Badge className="rounded-full border border-blue-400/20 bg-blue-400/10 px-2.5 py-1 text-blue-100">
+                    韧性 {formatNumber(enemy.poise)}
+                  </Badge>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <p className="text-xs text-slate-500">第一日生命</p>
+                    <p className="mt-1 font-semibold text-slate-100">{formatNumber(enemy.hp_day1)}</p>
+                  </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <p className="text-xs text-slate-500">第二日生命</p>
+                    <p className="mt-1 font-semibold text-slate-100">{formatNumber(enemy.hp_day2)}</p>
+                  </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <p className="text-xs text-slate-500">物普</p>
+                    <p className="mt-1 font-semibold text-emerald-300">{enemy.phys_normal > 0 ? `+${enemy.phys_normal}%` : '0%'}</p>
+                  </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <p className="text-xs text-slate-500">弱点倍率</p>
+                    <p className="mt-1 font-semibold text-amber-300">×{enemy.weakness_dmg}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {raceBadges.length > 0 ? raceBadges.map((badge) => (
+                    <Badge key={`${enemy.id}-${badge.label}`} className={`${badge.color} rounded-full px-2 py-0.5 text-xs`}>
+                      {badge.label}
+                    </Badge>
+                  )) : (
+                    <span className="text-xs text-slate-500">无特殊种族标签</span>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        )}
+      </div>
+
+      <div className="hidden md:block">
         <Table>
           <TableHeader>
             <TableRow className="border-slate-700/50 hover:bg-transparent">
@@ -222,7 +305,7 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort, currentPage,
             ) : (
               enemies.map((enemy, index) => {
                 const raceBadges = getRaceBadges(enemy);
-                const boss = isBoss(enemy.name);
+                const boss = isBossEnemy(enemy);
                 
                 return (
                   <TableRow 
@@ -311,7 +394,7 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort, currentPage,
         </Table>
       </div>
       {totalPages > 1 && (
-        <div className="flex items-center justify-center py-4 border-t border-slate-700/30">
+        <div className="flex items-center justify-center border-t border-slate-800/80 px-4 py-5">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -361,6 +444,6 @@ export function EnemyTable({ enemies, sortField, sortOrder, onSort, currentPage,
           </Pagination>
         </div>
       )}
-    </div>
+    </section>
   );
 }

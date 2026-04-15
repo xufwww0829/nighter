@@ -87,19 +87,21 @@ export function StatsCards({ stats }: StatsCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-8">
       {cards.map((card, index) => (
         <Card 
           key={index} 
-          className={`bg-gradient-to-br ${card.bgColor} border-slate-700/50 hover:border-slate-600/50 transition-all duration-300`}
+          className={`overflow-hidden border-slate-800/60 bg-gradient-to-br ${card.bgColor} shadow-[0_14px_40px_rgba(15,23,42,0.32)] transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-600/50`}
         >
-          <CardContent className="p-3">
-            <div className="flex items-center justify-between">
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs text-slate-400 mb-1">{card.label}</p>
-                <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
+                <p className="mb-2 text-[11px] uppercase tracking-[0.24em] text-slate-500">{card.label}</p>
+                <p className={`text-2xl font-semibold ${card.color}`}>{card.value}</p>
               </div>
-              <card.icon className={`w-5 h-5 ${card.color} opacity-60`} />
+              <div className="rounded-2xl border border-white/5 bg-slate-950/30 p-2">
+                <card.icon className={`h-5 w-5 ${card.color} opacity-80`} />
+              </div>
             </div>
           </CardContent>
         </Card>

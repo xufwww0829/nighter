@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Enemy, SortField, SortOrder, FilterState } from '@/types/enemy';
+import { buildEnemySearchText, isBossEnemy, normalizeSearchText } from '@/lib/enemy';
 
 export function useEnemyData() {
   const [enemies, setEnemies] = useState<Enemy[]>([]);
@@ -23,7 +24,7 @@ export function useEnemyData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/enemy_data.json');
+        const response = await fetch(`${import.meta.env.BASE_URL}enemy_data.json`);
         if (!response.ok) {
           throw new Error('Failed to fetch enemy data');
         }
@@ -50,7 +51,7 @@ export function useEnemyData() {
     });
   }, []);
 
-  const handleFilterChange = useCallback((key: keyof FilterState, value: any) => {
+  const handleFilterChange = useCallback(<K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1);
   }, []);
@@ -72,11 +73,8 @@ export function useEnemyData() {
 
     // Apply filters
     if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      result = result.filter(e => 
-        e.name.toLowerCase().includes(searchLower) || 
-        e.id.toLowerCase().includes(searchLower)
-      );
+      const searchLower = normalizeSearchText(filters.search);
+      result = result.filter((enemy) => buildEnemySearchText(enemy).includes(searchLower));
     }
 
     if (filters.race && filters.race !== 'all') {
@@ -106,10 +104,7 @@ export function useEnemyData() {
     }
 
     if (filters.isBoss !== null) {
-      result = result.filter(e => {
-        const isBoss = e.name.toLowerCase().includes('boss');
-        return filters.isBoss === isBoss;
-      });
+      result = result.filter((enemy) => filters.isBoss === isBossEnemy(enemy));
     }
 
     // Apply sorting
@@ -146,7 +141,7 @@ export function useEnemyData() {
     
     return {
       total: enemies.length,
-      bossCount: enemies.filter(e => e.name.toLowerCase().includes('boss')).length,
+      bossCount: enemies.filter(isBossEnemy).length,
       voidCount: enemies.filter(e => e.void === 'Yes').length,
       deathbornCount: enemies.filter(e => e.deathborn === 'Yes').length,
       ancientDragonCount: enemies.filter(e => e.ancient_dragon === 'Yes').length,

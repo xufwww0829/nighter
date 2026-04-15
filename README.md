@@ -116,4 +116,4 @@ app/
 - 增加详情抽屉或敌人对比视图
 - 支持导出当前筛选结果
 
-访问https://datanighter.hellcious.cloud/或https://datanigther.hellcious.lol/
+访问https://datanighter.hellcious.cloud/ 或 https://datanigther.hellcious.lol/

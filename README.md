@@ -115,3 +115,5 @@ app/
 - 增加多条件组合标签栏
 - 增加详情抽屉或敌人对比视图
 - 支持导出当前筛选结果
+
+访问https://datanighter.hellcious.cloud/或https://datanigther.hellcious.lol/
